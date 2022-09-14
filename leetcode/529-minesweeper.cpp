@@ -1,40 +1,48 @@
 class Solution {
 public:
-    void dfs(vector<vector<char>>& board, int n, int row, int col){
+    void dfs(vector<vector<char>>& board, int row, int col, int m, int n){
+        if (board[row][col] != 'E'){
+            return;
+        }
         int count = 0;
-        for (int i = -1; i < 2; i++){
-            if (i + row >= 0 && i + row < n){
-                for (int j = -1; j < 2; j++){
-                    if (j == 0 && i == 0){
-                        continue;
-                    }
-                    if (j + col >= 0 && j + col < n){
-                        if (board[row + i][col + j] == 'M'){
-                            count = count + 1;
-                        }
-                    }
-                }   
+        vector<vector<int>> directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1}, 
+                                          {0, -1}, {-1, 0}};
+        for (auto dir: directions){
+            if (row + dir[0] < 0 || row + dir[0] >= m){
+                continue;
+            }
+            if (col + dir[1] < 0 || col + dir[1] >= n){
+                continue;
+            }
+            if (board[row + dir[0]][col + dir[1]] == 'M'){
+                count++;
             }
         }
-        if (count != 0){
+        if (count){
             board[row][col] = '0' + count;
-        } else {
+        } else{
             board[row][col] = 'B';
-            for (int i = -1; i < 2; i++){
-                for (int j = -1; j < 2; j++){
-                    dfs(board, n, row + i, col + j);
+            for (auto dir: directions){
+                if (row + dir[0] < 0 || row + dir[0] >= m){
+                    continue;
                 }
+                if (col + dir[1] < 0 || col + dir[1] >= n){
+                    continue;
+                }
+                dfs(board, row + dir[0], col + dir[1], m, n);
             }
         }
+        
     }
     
     vector<vector<char>> updateBoard(vector<vector<char>>& board, vector<int>& click) {
+        int m = board.size();
+        int n = board[0].size();
         if (board[click[0]][click[1]] == 'M'){
             board[click[0]][click[1]] = 'X';
             return board;
-        } else {
-            dfs(board, board.size(), click[0], click[1]);
-            return board;
         }
+        dfs(board, click[0], click[1], m, n);
+        return board;
     }
 };
