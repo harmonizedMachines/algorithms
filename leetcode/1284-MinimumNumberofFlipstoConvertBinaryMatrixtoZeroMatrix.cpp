@@ -29,6 +29,12 @@ public:
         }
     }
     
+    void flipOrNot(){
+        
+        int flip = ;
+        int notflip = ;
+    }
+    
     int minFlips(vector<vector<int>>& mat) {
         int m = mat.size();
         int n = mat[0].size();
