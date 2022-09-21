@@ -13,7 +13,7 @@ public:
         return true;
     }
     
-    void flip(vector<vector<int>>& mat, int row, int col){
+    vector<vector<int>>& flip(vector<vector<int>>& mat, int row, int col){
         mat[row][col] ^= 1;
         if (row-1 >= 0){
             mat[row-1][col] ^= 1;
@@ -27,17 +27,22 @@ public:
         if (col+1 < n){
             mat[row][col+1] ^= 1;
         }
+        return mat;
     }
     
-    void flipOrNot(){
+    int flipOrNot(vector<vector<int>> mat, int row, int col){
+        if (col == n) row++, col = 0;
+        if (row == m) return check_zero(mat) ? 0: 100000;
         
-        int flip = ;
-        int notflip = ;
+        int notflipcount = flipOrNot(mat, row, col + 1);
+        int flipcount = flipOrNot(flip(mat, row, col), row, col + 1) + 1;
+        return min(flipcount, notflipcount);
     }
     
     int minFlips(vector<vector<int>>& mat) {
-        int m = mat.size();
-        int n = mat[0].size();
-        
+        m = mat.size();
+        n = mat[0].size();
+        int res = flipOrNot(mat, 0, 0);
+        return res >= 100000 ? -1: res;
     }
 };
