@@ -15,4 +15,25 @@ public:
         }
         return squares[n];
     }
+
+    int numSquaresMath(int n) {
+        if ((int)sqrt(n) * (int)sqrt(n) == n) {
+            return 1;
+        }
+        // Legendre's three-square theorem
+        while ((n & 3) == 0){
+            n >>= 2;
+        }
+        if ((n & 7) == 7) {
+            return 4;
+        }
+        int sqrt_n = sqrt(n);
+        for (int i = 0; i < sqrt(n); ++i) {
+            int tmp = n - i * i;
+            if ((int)sqrt(tmp) * (int)sqrt(tmp) == tmp) {
+                return 2;
+            }
+        }
+        return 3;
+    }
 };
