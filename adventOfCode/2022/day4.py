@@ -999,5 +999,6 @@ inputs = """51-88,52-87
 23-63,22-63
 3-94,1-3""".split("\n")
 
-inputs = []
-print()
+pairs = [[tuple(int(a) for a in b.split('-')) for b in c.split(",")] for c in inputs]
+print(sum(1 if (a[0] <= b[0] and a[1] >= b[1]) or (a[0] >= b[0] and a[1] <= b[1]) else 0 for a,b in pairs))
+print(sum(1 if min(a[1], b[1]) - max(a[0], b[0]) > -1 else 0 for a,b in pairs))
