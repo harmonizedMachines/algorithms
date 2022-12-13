@@ -98,72 +98,58 @@ inputs = """13110203102241123312415300040252413224324542240200212123434545353532
 000202411243122420140310501035333204626352325031215630345206242502134153000033354044334042221310101
 111301302244231442013332415144033330063530643146335532313306033656410450441505505240142210004121122"""
 
-# inputs = """30373
-# 25512
-# 653 32
-# 33549
-# 35390"""
-
 trees = [[int(i) for i in c] for c in inputs.split('\n')]
 cnt = 0
-visited = [[-1 for _ in range(len(trees[0]))] for _ in range(len(trees))]
-
+visited = [[0 for _ in range(len(trees[0]))] for _ in range(len(trees))]
 for row in range(len(trees)):
     for col in range(len(trees[0])):
          if row == 0 or col == 0 or row == len(trees) - 1 or col == len(trees[0]) - 1:
             visited[row][col] = 1
 
-for row in range(1, len(trees) - 1):
-    maxi = [0 for _ in range(len(trees))]
-    for col in range(1, len(trees[0]) - 1):
-        if visited[row-1][col] == 1 and trees[row-1][col] < trees[row][col]:
+maxi_row = [0 for _ in range(len(trees))]
+maxi_col = [0 for _ in range(len(trees))]
+for row in range(len(trees)):
+    for col in range(len(trees[0])):
+        if maxi_row[col] < trees[row][col]:
             visited[row][col] = 1
-        if visited[row][col-1] == 1 and trees[row][col-1] < trees[row][col]:
+            maxi_row[col] = trees[row][col]
+        if maxi_col[row] < trees[row][col]:
             visited[row][col] = 1
-        if visited[row+1][col] == 1 and trees[row+1][col] < trees[row][col]:
-            visited[row][col] = 1
-        if visited[row][col+1] == 1 and trees[row][col+1] < trees[row][col]:
-            visited[row][col] = 1
+            maxi_col[row] = trees[row][col]
 
-for row in range(len(trees) - 2, 0, -1):
-    for col in range(len(trees[0]) - 2, 0, -1):
-        if visited[row-1][col] == 1 and trees[row-1][col] < trees[row][col]:
+maxi_row = [0 for _ in range(len(trees))]
+maxi_col = [0 for _ in range(len(trees))]
+for row in range(len(trees) - 1, -1, -1):
+    for col in range(len(trees[0]) - 1, -1, -1):
+        if maxi_row[col] < trees[row][col]:
             visited[row][col] = 1
-        if visited[row][col-1] == 1 and trees[row][col-1] < trees[row][col]:
+            maxi_row[col] = trees[row][col]
+        if maxi_col[row] < trees[row][col]:
             visited[row][col] = 1
-        if visited[row+1][col] == 1 and trees[row+1][col] < trees[row][col]:
-            visited[row][col] = 1
-        if visited[row][col+1] == 1 and trees[row][col+1] < trees[row][col]:
-            visited[row][col] = 1
-
-print(sum(1 if visited[r][c] == 1 else 0 for r in range(len(trees)) for c in range(len(trees[0]))))
-
-disp = [0, 1, 0, -1, 0]
-
-def dfs(col, row):
-    if row < 0 or col < 0 or row >= len(trees) or col >= len(trees[0]) or visited[row][col] != -1:
-        return
-    if row == 0 or col == 0 or row == len(trees) - 1 or col == len(trees[0]) - 1:
-        visited[row][col] = 1
-        for i in range(4):
-            dfs(col + disp[i], row + disp[i + 1])
-            return
-    for i in range(4):
-        r, c = row + disp[i], col + disp[i + 1]
-        if r < 0 or c < 0 or r >= len(trees) or c >= len(trees[0]):
-            continue
-        if visited[r][c] == 1 and trees[r][c] < trees[row][col]:
-            visited[row][col] = 1
-            for i in range(4):
-                dfs(col + disp[i], row + disp[i + 1])
-            return
-    visited[row][col] = 0
-
-for i in range(len(trees)):
-    for j in range(len(trees[0])):
-        try:
-            dfs(j, i)
-        except:
-            print(j, i)
+            maxi_col[row] = trees[row][col]
 
 print(sum(1 if visited[r][c] == 1 else 0 for r in range(len(trees)) for c in range(len(trees[0]))))
+
+views = [[0 for _ in range(len(trees[0]))] for _ in range(len(trees))]
+for row in range(len(trees)):
+    for col in range(len(trees[0])):
+        t1, t2, t3, t4 = 0, 0, 0, 0
+        for r in range(row - 1, -1, -1):
+            t1 += 1
+            if trees[r][col] >= trees[row][col]:
+                break
+        for r in range(row + 1, len(trees)):
+            t2 += 1
+            if trees[r][col] >= trees[row][col]:
+                break
+        for c in range(col - 1, -1, -1):
+            t3 += 1
+            if trees[row][c] >= trees[row][col]:
+                break
+        for c in range(col + 1, len(trees[0])):
+            t4 += 1
+            if trees[row][c] >= trees[row][col]:
+                break
+        views[row][col] = t1 * t2 * t3 * t4
+
+print(max(max(i) for i in views))
