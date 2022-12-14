@@ -1998,3 +1998,6 @@ R 2
 D 9
 L 17
 R 19"""
+
+inputs = inputs.split('\n')
+start = [0, 0]
