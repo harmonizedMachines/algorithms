@@ -1999,5 +1999,67 @@ D 9
 L 17
 R 19"""
 
+def printboard(rope, l=25):
+    board = [["*" for _ in range(l)] for _ in range(l)]
+    for i in range(len(rope)):
+        board[rope[i][1]][rope[i][0]] = str(i)
+    return ["".join(i) for i in board]
+
+def movetail(start, end):
+    xdisp = start[0] - end[0]
+    ydisp = start[1] - end[1]
+    diff = abs(xdisp) + abs(ydisp)
+    if diff == 3:
+        end[0], end[1] = start[0], start[1]
+        if abs(ydisp) == 2:
+            end[1] -= ydisp // 2
+        else:
+            end[0] -= xdisp // 2
+    elif diff == 2:
+        if xdisp == 0:
+            end[1] += ydisp // 2
+        elif ydisp == 0:
+            end[0] += xdisp // 2
+    elif diff == 4:
+        end[1] += ydisp // 2
+        end[0] += xdisp // 2
+
 inputs = inputs.split('\n')
-start = [0, 0]
+visited = set()
+start, end = [0, 0], [0, 0]
+for line in inputs:
+    num = int(line.split(" ")[-1])
+    if line[0] == "L":
+        disp = [-1, 0]
+    elif line[0] == "R":
+        disp = [1, 0]
+    elif line[0] == "D":
+        disp = [0, -1]
+    else:
+        disp = [0, 1]
+    for _ in range(num):
+        start[0], start[1] = start[0] + disp[0], start[1] + disp[1]
+        movetail(start, end)
+        visited.add(tuple(end))
+
+print(len(visited))
+
+visited = set()
+newrope = [[0, 0] for _ in range(10)]
+for line in inputs:
+    num = int(line.split(" ")[-1])
+    if line[0] == "L":
+        disp = [-1, 0]
+    elif line[0] == "R":
+        disp = [1, 0]
+    elif line[0] == "D":
+        disp = [0, -1]
+    else:
+        disp = [0, 1]
+    for _ in range(num):
+        newrope[0][0], newrope[0][1] = newrope[0][0] + disp[0], newrope[0][1] + disp[1]
+        for i in range(1, 10):
+            movetail(newrope[i - 1], newrope[i])
+        visited.add(tuple(newrope[-1]))
+
+print(len(visited))
