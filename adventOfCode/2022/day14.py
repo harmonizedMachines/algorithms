@@ -136,5 +136,11 @@ grid = [[["."] for _ in range(200)] for _ in range(100)]
 for line in inputs:
     paths = line.split("->")
     paths = [i.strip().split(",") for i in paths]
-    for p in paths:
-        grid[]
+    prev = [int(i) for i in paths[0]]
+    for p in paths[1:]:
+        curr = [int(i) for i in p]
+        for row in range(prev[1], curr[1]):
+            for col in range(prev[0], curr[0]):
+                grid[row][col] = "#"
+        prev = curr
+print("hi")
